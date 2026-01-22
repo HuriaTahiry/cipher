@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Cipher: Encode and Decode Online</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2a3c7f, #4a5fa3);
+            color: #f0f0f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: #b8c1ec;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .caesar-icon {
+            color: #ffd166;
+            margin-right: 10px;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .input-section, .output-section, .info-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(30, 40, 100, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4a5fa3;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: #ffd166;
+        }
+        
+        .shift-control {
+            margin-bottom: 25px;
+        }
+        
+        .shift-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .shift-value {
+            font-weight: bold;
+            color: #ffd166;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 10px;
+            border-radius: 10px;
+        }
+        
+        .shift-slider {
+            width: 100%;
+            height: 10px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .shift-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #ffd166;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 209, 102, 0.5);
+        }
+        
+        textarea {
+            width: 100%;
+            height: 180px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #f0f0f0;
+            padding: 15px;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #4a5fa3;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        button i {
+            margin-right: 8px;
+        }
+        
+        .encode-btn {
+            background: linear-gradient(to right, #4a5fa3, #3a4f93);
+            color: white;
+        }
+        
+        .encode-btn:hover {
+            background: linear-gradient(to right, #5a6fb3, #4a5fa3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 95, 163, 0.4);
+        }
+        
+        .decode-btn {
+            background: linear-gradient(to right, #ff9a3c, #ff7a00);
+            color: white;
+        }
+        
+        .decode-btn:hover {
+            background: linear-gradient(to right, #ffaa4c, #ff8a10);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 122, 0, 0.4);
+        }
+        
+        .clear-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f0f0f0;
+        }
+        
+        .clear-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .output-display {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 220px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 10px;
+            word-wrap: break-word;
+        }
+        
+        .cipher-wheel {
+            display: flex;
+            justify-content: center;
+            margin: 25px 0;
+        }
+        
+        .wheel-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                #1a2a6c 0% 3.33%,
+                #2a3c7f 3.33% 6.66%,
+                #3a4f93 6.66% 10%,
+                #4a5fa3 10% 13.33%,
+                #5a6fb3 13.33% 16.66%,
+                #6a7fc3 16.66% 20%,
+                #7a8fd3 20% 23.33%,
+                #8a9fe3 23.33% 26.66%,
+                #9aaff3 26.66% 30%,
+                #aabfff 30% 33.33%,
+                #bacfff 33.33% 36.66%,
+                #cadfff 36.66% 40%,
+                #daefff 40% 43.33%,
+                #eaffff 43.33% 46.66%,
+                #faffff 46.66% 50%,
+                #fffaf0 50% 53.33%,
+                #fff0e1 53.33% 56.66%,
+                #ffe6d2 56.66% 60%,
+                #ffdcc3 60% 63.33%,
+                #ffd2b4 63.33% 66.66%,
+                #ffc8a5 66.66% 70%,
+                #ffbe96 70% 73.33%,
+                #ffb487 73.33% 76.66%,
+                #ffaa78 76.66% 80%,
+                #ffa069 80% 83.33%,
+                #ff965a 83.33% 86.66%,
+                #ff8c4b 86.66% 90%,
+                #ff823c 90% 93.33%,
+                #ff782d 93.33% 96.66%,
+                #ff6e1e 96.66% 100%
+            );
+            position: relative;
+            transition: transform 0.5s ease;
+        }
+        
+        .inner-wheel {
+            position: absolute;
+            width: 60%;
+            height: 60%;
+            background: #1a2a6c;
+            border-radius: 50%;
+            top: 20%;
+            left: 20%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffd166;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .wheel-pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ff6e1e;
+            font-size: 2rem;
+            filter: drop-shadow(0 0 3px rgba(255, 110, 30, 0.7));
+        }
+        
+        .alphabet-shift {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 20px;
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .original-letter {
+            background: rgba(74, 95, 163, 0.7);
+        }
+        
+        .shifted-letter {
+            background: rgba(255, 122, 0, 0.7);
+        }
+        
+        .arrow {
+            color: #ffd166;
+            margin: 0 2px;
+        }
+        
+        .info-content {
+            line-height: 1.6;
+        }
+        
+        .info-content p {
+            margin-bottom: 15px;
+        }
+        
+        .historical-fact {
+            background: rgba(255, 209, 102, 0.1);
+            border-left: 4px solid #ffd166;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            color: #b8c1ec;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-lock caesar-icon"></i> Caesar Cipher Tool</h1>
+            <p class="tagline">Encode and decode messages using the classic Caesar cipher method used by Julius Caesar for secret communication.</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title"><i class="fas fa-keyboard"></i> Input Text</h2>
+                
+                <div class="shift-control">
+                    <div class="shift-label">
+                        <span>Shift Value (Key):</span>
+                        <span class="shift-value" id="shiftValue">3</span>
+                    </div>
+                    <input type="range" min="1" max="25" value="3" class="shift-slider" id="shiftSlider">
+                </div>
+                
+                <textarea id="inputText" placeholder="Enter your message here...">The quick brown fox jumps over the lazy dog</textarea>
+                
+                <div class="button-group">
+                    <button class="encode-btn" id="encodeBtn">
+                        <i class="fas fa-lock"></i> Encode
+                    </button>
+                    <button class="decode-btn" id="decodeBtn">
+                        <i class="fas fa-unlock"></i> Decode
+                    </button>
+                    <button class="clear-btn" id="clearBtn">
+                        <i class="fas fa-eraser"></i> Clear
+                    </button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2 class="section-title"><i class="fas fa-lock-open"></i> Output Text</h2>
+                <div class="output-display" id="outputText">
+                    <p style="color: #b8c1ec; text-align: center; margin-top: 80px;">Your encoded/decoded message will appear here</p>
+                </div>
+                
+                <div class="cipher-wheel">
+                    <div class="wheel-container">
+                        <div class="wheel-pointer">
+                            <i class="fas fa-caret-down"></i>
+                        </div>
+                        <div class="wheel" id="cipherWheel">
+                            <div class="inner-wheel" id="wheelShift">3</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alphabet-shift" id="alphabetShift">
+                    <!-- Alphabet visualization will be generated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h2 class="section-title"><i class="fas fa-info-circle"></i> About Caesar Cipher</h2>
+                <div class="info-content">
+                    <p>The Caesar cipher is one of the simplest and most widely known encryption techniques. It is a type of substitution cipher in which each letter in the plaintext is shifted a certain number of places down or up the alphabet.</p>
+                    
+                    <p>For example, with a shift of 3:</p>
+                    <p><strong>A → D</strong>, <strong>B → E</strong>, <strong>C → F</strong>, ... <strong>X → A</strong>, <strong>Y → B</strong>, <strong>Z → C</strong></p>
+                    
+                    <p>This cipher is named after Julius Caesar, who used it in his private correspondence with a shift of 3 to protect messages of military significance.</p>
+                    
+                    <div class="historical-fact">
+                        <p><i class="fas fa-history"></i> <strong>Historical Note:</strong> The Caesar cipher is also known as a shift cipher. When a shift of 13 is used, it's called ROT13, which is its own inverse (applying ROT13 twice returns the original text).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Caesar Cipher Tool | Created with HTML, CSS & JavaScript | Shift values: 1-25</p>
+            <p>Note: This tool only encodes/decodes letters. Numbers, symbols, and spaces remain unchanged.</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const shiftSlider = document.getElementById('shiftSlider');
+        const shiftValue = document.getElementById('shiftValue');
+        const encodeBtn = document.getElementById('encodeBtn');
+        const decodeBtn = document.getElementById('decodeBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const cipherWheel = document.getElementById('cipherWheel');
+        const wheelShift = document.getElementById('wheelShift');
+        const alphabetShift = document.getElementById('alphabetShift');
+
+        // Initialize alphabet visualization
+        createAlphabetVisualization(parseInt(shiftSlider.value));
+
+        // Update shift value and visualization when slider changes
+        shiftSlider.addEventListener('input', function() {
+            const shift = parseInt(this.value);
+            shiftValue.textContent = shift;
+            wheelShift.textContent = shift;
+            updateCipherWheel(shift);
+            createAlphabetVisualization(shift);
+            
+            // Auto-encode if there's input text
+            if (inputText.value.trim()) {
+                encodeText();
+            }
+        });
+
+        // Encode button click
+        encodeBtn.addEventListener('click', encodeText);
+
+        // Decode button click
+        decodeBtn.addEventListener('click', decodeText);
+
+        // Clear button click
+        clearBtn.addEventListener('click', function() {
+            inputText.value = '';
+            outputText.innerHTML = '<p style="color: #b8c1ec; text-align: center; margin-top: 80px;">Your encoded/decoded message will appear here</p>';
+        });
+
+        // Caesar cipher encode function
+        function caesarCipher(text, shift, encode = true) {
+            shift = encode ? shift : (26 - shift) % 26;
+            
+            return text.replace(/[a-zA-Z]/g, function(char) {
+                const base = char <= 'Z' ? 65 : 97;
+                return String.fromCharCode(((char.charCodeAt(0) - base + shift) % 26) + base);
+            });
+        }
+
+        // Encode the input text
+        function encodeText() {
+            const text = inputText.value;
+            const shift = parseInt(shiftSlider.value);
+            
+            if (!text.trim()) {
+                outputText.innerHTML = '<p style="color: #ff6e1e; text-align: center; margin-top: 80px;">Please enter some text to encode</p>';
+                return;
+            }
+            
+            const encoded = caesarCipher(text, shift, true);
+            outputText.innerHTML = `<p><strong>Encoded with shift ${shift}:</strong></p><p style="margin-top: 15px; font-size: 1.1rem; line-height: 1.5;">${encoded}</p>`;
+        }
+
+        // Decode the input text
+        function decodeText() {
+            const text = inputText.value;
+            const shift = parseInt(shiftSlider.value);
+            
+            if (!text.trim()) {
+                outputText.innerHTML = '<p style="color: #ff6e1e; text-align: center; margin-top: 80px;">Please enter some text to decode</p>';
+                return;
+            }
+            
+            const decoded = caesarCipher(text, shift, false);
+            outputText.innerHTML = `<p><strong>Decoded with shift ${shift}:</strong></p><p style="margin-top: 15px; font-size: 1.1rem; line-height: 1.5;">${decoded}</p>`;
+        }
+
+        // Update cipher wheel visualization
+        function updateCipherWheel(shift) {
+            // Calculate rotation (360 degrees / 26 letters = 13.846 degrees per letter)
+            const rotation = shift * (360 / 26);
+            cipherWheel.style.transform = `rotate(${rotation}deg)`;
+        }
+
+        // Create alphabet shift visualization
+        function createAlphabetVisualization(shift) {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let html = '';
+            
+            for (let i = 0; i < alphabet.length; i++) {
+                const originalLetter = alphabet[i];
+                const shiftedIndex = (i + shift) % 26;
+                const shiftedLetter = alphabet[shiftedIndex];
+                
+                html += `
+                    <div>
+                        <div class="letter original-letter">${originalLetter}</div>
+                        <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+                        <div class="letter shifted-letter">${shiftedLetter}</div>
+                    </div>
+                `;
+            }
+            
+            alphabetShift.innerHTML = html;
+        }
+
+        // Initialize the cipher wheel rotation
+        updateCipherWheel(parseInt(shiftSlider.value));
+        
+        // Auto-encode the example text on page load
+        encodeText();
+    </script>
+</body>
+</html>
